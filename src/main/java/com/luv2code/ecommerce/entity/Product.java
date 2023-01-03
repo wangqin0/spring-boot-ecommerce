@@ -1,6 +1,7 @@
 package com.luv2code.ecommerce.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,7 +11,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "product")
-@Data
+@Getter
+@Setter
 public class Product {
 
     @Id
