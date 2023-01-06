@@ -17,6 +17,6 @@ public class RestConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry cors) {
 
-        cors.addMapping(basePath[0] + "/**").allowedOrigins(allowedOrigins);
+        cors.addMapping(basePath[0] + "/**").allowedOrigins("*");
     }
 }
