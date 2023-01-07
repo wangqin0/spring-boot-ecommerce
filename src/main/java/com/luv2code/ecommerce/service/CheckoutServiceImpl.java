@@ -1,17 +1,21 @@
 package com.luv2code.ecommerce.service;
 
 import com.luv2code.ecommerce.dao.CustomerRepository;
+import com.luv2code.ecommerce.dto.PaymentInfo;
 import com.luv2code.ecommerce.dto.Purchase;
 import com.luv2code.ecommerce.dto.PurchaseResponse;
 import com.luv2code.ecommerce.entity.Customer;
 import com.luv2code.ecommerce.entity.Order;
 import com.luv2code.ecommerce.entity.OrderItem;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
@@ -20,8 +24,10 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Autowired
     // @Autowired is optional since we only have one constructor
-    public CheckoutServiceImpl(CustomerRepository customerRepository) {
+    public CheckoutServiceImpl(CustomerRepository customerRepository,
+                               @Value("${stripe.key.secret}") String secret) {
         this.customerRepository = customerRepository;
+        Stripe.apiKey = secret;
     }
 
     @Override
@@ -58,6 +64,20 @@ public class CheckoutServiceImpl implements CheckoutService {
         customerRepository.save(customer);
 
         return new PurchaseResponse(trackingNumber);
+    }
+
+    @Override
+    public PaymentIntent creatPaymentIntent(PaymentInfo paymentInfo) throws StripeException {
+
+        List<String> paymentMethodTypes = new ArrayList<>();
+        paymentMethodTypes.add("card");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", paymentInfo.getAmount());
+        params.put("currency", paymentInfo.getCurrency());
+        params.put("payment_method_types", paymentMethodTypes);
+
+        return PaymentIntent.create(params);
     }
 
     private String generateOrderTrackingNumber() {

@@ -49,6 +49,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>22.4.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
