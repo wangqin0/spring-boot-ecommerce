@@ -19,7 +19,7 @@ public class SecurityConfig {
         ).oauth2ResourceServer().jwt();
 
         // add cors filters
-        http.cors();
+        http.cors().and().csrf().disable();
 
         return http.build();
     }

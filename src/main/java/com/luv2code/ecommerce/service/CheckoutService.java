@@ -10,5 +10,5 @@ public interface CheckoutService {
 
     PurchaseResponse placeOrder(Purchase purchase);
 
-    PaymentIntent creatPaymentIntent(PaymentInfo paymentInfo) throws StripeException;
+    PaymentIntent createPaymentIntent(PaymentInfo paymentInfo) throws StripeException;
 }

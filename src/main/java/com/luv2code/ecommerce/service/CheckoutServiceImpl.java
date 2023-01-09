@@ -16,18 +16,22 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     private CustomerRepository customerRepository;
 
     @Autowired
     // @Autowired is optional since we only have one constructor
     public CheckoutServiceImpl(CustomerRepository customerRepository,
-                               @Value("${stripe.key.secret}") String secret) {
+                               @Value("${stripe.key.secret}") String secretKey) {
+
         this.customerRepository = customerRepository;
-        Stripe.apiKey = secret;
+        Stripe.apiKey = secretKey;
     }
 
     @Override
@@ -40,6 +44,8 @@ public class CheckoutServiceImpl implements CheckoutService {
         // generate tracking number
         String trackingNumber = generateOrderTrackingNumber();
         order.setTrackingNumber(trackingNumber);
+
+        logger.info("trackingNumber=" + trackingNumber);
 
         // populate order with orderItems
         Set<OrderItem> orderItems = purchase.getOrderItems();
@@ -67,7 +73,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public PaymentIntent creatPaymentIntent(PaymentInfo paymentInfo) throws StripeException {
+    public PaymentIntent createPaymentIntent(PaymentInfo paymentInfo) throws StripeException {
 
         List<String> paymentMethodTypes = new ArrayList<>();
         paymentMethodTypes.add("card");
